@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Content/Css/LobbyAdm.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <title>lobby Adm</title>
+</head>
+
+<body>
+    <div class="root-lobby" id="root-lobby">
+        <!--planning poker lobby-->
+        <div class="lobby">
+            <!--botoes(cards)-->
+            <div class="lobby-stories-buttons">
+                <div class="lobby-center">
+                    <div class="lobby-buttons">
+                        <button type="button" value="1" id="card1" onclick="clickVote(1)" class="btn-lobby-1">
+                            <div class="button-detail">
+                                <strong>1</strong>
+                            </div>
+                        </button>
+                        <button type="button" value="2" id="card2" onclick="clickVote(2)" class="btn-lobby-2">
+                            <div class="button-detail">
+                                <strong>2</strong>
+                            </div>
+                        </button>
+                        <button type="button" value="3" id="card3" onclick="clickVote(3)" class="btn-lobby-3">
+                            <div class="button-detail">
+                                <strong>3</strong>
+                            </div>
+                        </button>
+                        <button type="button" value="5" id="card5" onclick="clickVote(5)" class="btn-lobby-5">
+                            <div class="button-detail">
+                                <strong>5</strong>
+                            </div>
+                        </button>
+                        <button type="button" value="8" id="card8" onclick="clickVote(8)" class="btn-lobby-8">
+                            <div class="button-detail">
+                                <strong>8</strong>
+                            </div>
+                        </button>
+                        <button type="button" value="13" id="card13" onclick="clickVote(13)" class="btn-lobby-13">
+                            <div class="button-detail">
+                                <strong>13</strong>
+                            </div>
+                        </button>
+                        <button type="button" value="coffee" id="cardCoffee" onclick="clickVote('coffee')"
+                            class="btn-lobby-coffee">
+                            <div class="button-detail">
+                                <strong><i class="ph ph-coffee"></i></strong>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="apresentation">
+                        <H1>Crie ou ative algum story</H1>
+                    </div>
+                </div>
+
+                <div class="stories-root">
+                    <div class="stories">
+                        <div class="tab">
+                            <button onclick="openTab('stories-content')" class="button-st">Active Stories</button>
+                            <button onclick="openTab('stories-completed-content')" class="button-stc">Finished
+                                Stories</button>
+                        </div>
+
+                        <div class="stories-content">
+
+                        </div>
+
+                        <div class="stories-completed-content" style="display: none;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- sidebar -->
+            <div class="lobby-sidebar">
+                <img src="../Public/header_logo.png" alt="">
+
+                <div class="div-players-root" id="div-players-root">
+                    <div class="div-players">
+                        <!-- <span class="player">
+                            <i class="ph ph-user-circle-gear"></i>
+                            <h2>Thiago</h2>
+                        </span> -->
+                    </div>
+                </div>
+
+                <div class="invite-token">
+                    <h2>token not found</h2><i onclick="" class="ph ph-copy"></i>
+                </div>
+
+                <div class="user-information">
+                    <i class="ph ph-user-circle"></i>
+                    <H2 class="informations-name" id="informations-name">Thiago</H2>
+                </div>
+
+                <div class="options-buttons">
+                    <button class="add-stories" title="Adicionar Stories"><i class="ph ph-plus"></i></button>
+                    <button class="finish" title="Exibir Resultados"><i class="ph ph-presentation-chart"></i></button>
+                    <button class="show-vote" title="Exibir Votação"><i class="ph ph-eye-slash"></i></button>
+                    <button class="refresh" title="Reiniciar Votação"><i
+                            class="ph ph-arrows-counter-clockwise"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../Content/Script/httphandler.js"></script>
+    <script src="../Content/Script/Controller/lobby.controller.js"></script>
+</body>
+
+</html>
