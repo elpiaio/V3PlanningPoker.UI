@@ -1,18 +1,25 @@
-let data = [];
+let room = [];
 let usersList = [];
+let stories = [];
+
+var storiesContent = document.querySelector(".stories-content");
+
 let loaded = false; // Variável para controlar se os dados foram carregados
 const intlVar = new Intl.DateTimeFormat('pt-BR');
 const user = JSON.parse(localStorage.getItem("userId"));
+const idOfRoom = localStorage.getItem("idRoom")
 var ativo = false;
 
 if (!loaded) { // Verifica se os dados já foram carregados
     getRoom().then(() => {
-        stories();
+        renderRoom();
         users();
         loaded = true; // Marca os dados como carregados
     });
 }
-const socket = new WebSocket(`ws://localhost:3005/channel/room/${localStorage.getItem("idRoom")}`);
+
+
+const socket = new WebSocket(`ws://localhost:3005/channel/room/${idOfRoom}`);
 
 socket.addEventListener('open', (event) => {
     console.log('Conectado ao servidor WebSocket Room');
@@ -23,56 +30,84 @@ socket.addEventListener('message', (event) => {
     console.log("ouvinte da room")
 
     if (object.type === 'story_deleted') {
-        console.log("entrou no story deleted")
-        data.stories = data.stories.filter((story) => story.id !== object.id);
-        stories();
+        console.log("entrou no story deleted");
+        deleteStory(object.id);
     }
-    if (object.type === 'start_story') {
+    if (object.type === "Voting") {
         console.log("entrou no start story")
 
+        getRoomId();
     }
     if (object.type === 'add_story') {
-        console.log("entrou no start story")
+        console.log("entrou no adicionar story")
 
-        data.stories.push(object);
-        stories();
+        room.story.push(object);
     }
 });
 
 async function getRoom() {
-    var id = localStorage.getItem("idRoom");
-
     const result = await Handler({
-        url: `room/${id}`,
+        url: `room/${idOfRoom}`,
         method: "GET"
     });
 
     const userResult = await Handler({
-        url: `userRoom/${id}`,
+        url: `room/users/${idOfRoom}`,
         method: "GET"
     });
 
-    data = result;
+    room = result;
+    stories = result.story;
     usersList = userResult;
-    console.log(usersList);
 }
 
-function stories() {
-    var stories_content = document.querySelector(".stories-content");
-    stories_content.innerHTML = ""; // Limpa o conteúdo existente
-
-    data.stories.forEach(story => {
-        stories_content.innerHTML += `
-        <span class="story">
-            <p>${story.storyName}</p>
-            <p>${intlVar.format(new Date(story.createdAt))}</p>
-            <div class="story-icons" style="font-size: 22px;">
-                <a onclick="activatingStories(${story.id})"><i class="ph ph-play"></i></a>
-                <a onclick="deleteStories(${story.id})"><i class="ph ph-trash"></i></a>
-            </div>
-        </span>
-        `;
+async function getRoomId() {
+    const result = await Handler({
+        url: `room/${idOfRoom}`,
+        method: "GET"
     });
+
+    room = result;
+}
+
+
+function deleteStory(idStory) {
+    const index = stories.findIndex(story => story.id == idStory);
+    stories[index].element.remove();
+    stories.splice(index, 1);
+    reqDeleteStories(idStory);
+}
+
+function renderRoom() {
+    // var lobbyButtons = document.querySelector(".lobby-buttons");
+    // var apresentation = document.querySelector(".apresentation");
+
+    stories = stories.map(story => {
+        console.log(story);
+        const element = createStory(story);
+        storiesContent.appendChild(element);
+
+        return { ...story, element }
+    });
+}
+
+function createStory(storyData) {
+    const story = document.createElement("div");
+    story.classList.add("story");
+
+    if(storyData.voting == true) story.classList.add("is-voting");
+
+    const content = `
+        <p>${storyData.storyName}</p>
+        <p>${intlVar.format(new Date(storyData.createdAt))}</p>
+        <div class="story-icons">
+            <a onclick="activatingStories(${storyData.id})"><i class="ph ph-play"></i></a>
+            <a onclick="deleteStories(${storyData.id})"><i class="ph ph-trash"></i></a>
+        </div>`;
+
+    story.innerHTML = content;
+    
+    return story
 }
 
 function users() {
@@ -94,8 +129,7 @@ function users() {
     })
 }
 
-
-async function deleteStories(id) {
+async function reqDeleteStories(id) {
     try {
         const result = await Handler({
             url: `story/${id}`,
@@ -109,16 +143,35 @@ async function deleteStories(id) {
 
 async function activatingStories(storyId) {
     try {
-        object = {
+        const object = {
             storyId: storyId,
-            type: "activating_Stories"
         }
 
+        const result = await Handler({
+            url: `story/Voting/${idOfRoom}`,
+            param: object,
+            method: "PUT"
+        });
 
+        console.log(result)
     } catch (e) {
         alert(e)
     }
 }
+
+var addStory = document.querySelector(".add-stories")
+var addStoryDialog = document.querySelector("#add-story-dialog")
+var buttonSend = document.querySelector(".button-send")
+var inputStory = document.querySelector(".input-story")
+
+addStory.addEventListener('click', function () {
+    addStoryDialog.showModal();
+})
+
+buttonSend.addEventListener('click', function() {
+    var storyName = inputStory.value
+})
+
 
 
 //Ouvinte de voto
@@ -130,36 +183,9 @@ socketVote.addEventListener('open', (event) => {
 });
 
 socketVote.addEventListener('message', (event) => {
-    console.log("ouvindo voto")
-    const object = JSON.parse(event.data)
-    console.log(object);
+    const vote = JSON.parse(event.data);
 
-    if (object.type === 'vote') {
-        vote(object);
-    }
-    if (object.type === '') {
-        localStorage.setItem("activeStorie", object.storyId)
-        console.log("ativou o storie")
-    }
-    if (object.type === 'Voted') {
-
-    }
-    if (object.type === 'Voting') {
-
-    }
-    if (object.type === 'finish_Votation') {
-
-    }
-    if (object.type === 'show_Votes') {
-
-    }
-    if (object.type === 'show_Results') {
-
-    }
-    if (object.type === 'Refresh') {
-
-    }
-
+    console.log(vote);
 });
 
 async function clickVote(vote) {

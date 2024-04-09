@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -11,6 +13,67 @@ body {
     height: 100vh;
     width: 100%;
     background-size: cover;
+}
+
+#add-story-dialog{
+    border-radius: 15px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 100%;
+    max-width: 500px;
+    /* background-color: #aeaeae; */
+    background-color: rgb(27, 31, 20);
+    color: white !important;
+}
+
+.add-story-form{
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #000000;
+}
+
+.add-story-form input{
+    border: none;
+    /* box-shadow: 1px 3px 9px 0px #7c7c7c;; */
+    padding: 8px 18px;
+    border-radius: 12px;
+    background-color: rgb(199, 199, 199);
+    font-weight: 500;
+    color: rgb(0, 0, 0);
+    font-size: 16px;
+    width: 100%;
+    height: 44px;
+    margin-bottom: 10px;
+}
+
+.add-story-form input:focus {
+    outline: none;
+}
+
+.add-story-form button{
+    padding: 12px 35px;
+    cursor: pointer;
+    border-radius: 12px;
+    background-color: rgb(32, 37, 23);
+    color: #f1f1f1;
+    font-size: 15PX;
+    width: 100%;
+}
+
+.actions-modal {
+    display: flex;
+    gap: 10px
+}
+
+.add-story-form h2 {
+    color: white;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 .root-lobby {
@@ -38,9 +101,6 @@ body {
 .lobby-center{
     height: 100%;
 }
-.lobby-buttons {
-    display: none !important;
-}
 
 .apresentation{
     display: flex;
@@ -61,6 +121,15 @@ body {
     grid-template-rows: 1fr repeat(3);
     grid-template-columns: 1fr 1fr 1fr;
     gap: 10px;
+}
+
+.lobby-buttons button:hover {
+    background-color: rgba(37, 44, 27, 0.5);
+    cursor: pointer;
+}
+
+.lobby-buttons {
+    display: none;
 }
 
 .lobby-buttons button {
@@ -91,10 +160,7 @@ body {
     font-size: 40px;
 }
 
-.lobby-buttons button:hover {
-    background-color: rgba(37, 44, 27, 0.5);
-    cursor: pointer;
-}
+
 
 .stories-root {
     display: flex;

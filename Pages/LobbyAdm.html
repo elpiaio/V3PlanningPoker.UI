@@ -11,6 +11,19 @@
 
 <body>
     <div class="root-lobby" id="root-lobby">
+
+        <dialog id="add-story-dialog">
+            <form method="dialog" class="add-story-form">
+                <h2>Add Story</h2>
+                <input class="input-story" type="text" placeholder="Story Name">
+                <div method="dialog" class="actions-modal">
+                    <button value="cancel">Close</button>
+                    <button value="send" class="button-send">Send</button>
+                   
+                </div>
+            </form>
+        </dialog>
+
         <!--planning poker lobby-->
         <div class="lobby">
             <!--botoes(cards)-->
@@ -114,6 +127,10 @@
 
     <script src="../Content/Script/httphandler.js"></script>
     <script src="../Content/Script/Controller/lobby.controller.js"></script>
+    <script>
+       
+        
+    </script>
 </body>
 
 </html>
