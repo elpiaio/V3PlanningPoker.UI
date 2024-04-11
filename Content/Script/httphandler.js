@@ -17,8 +17,8 @@ async function Handler(config) {
     if (param) requestOptions.body = JSON.stringify(param)
 
     try {
-        const response = await fetch(apiUrl, requestOptions);
-        const data = await response.json();
+        const request = await fetch(apiUrl, requestOptions);
+        const data = await request.json();
         return data;
     } catch (error) {
         console.log(error);

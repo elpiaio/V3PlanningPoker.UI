@@ -12,12 +12,11 @@ var ativo = false;
 
 if (!loaded) { // Verifica se os dados já foram carregados
     getRoom().then(() => {
-        renderRoom();
+        renderStory();
         users();
         loaded = true; // Marca os dados como carregados
     });
 }
-
 
 const socket = new WebSocket(`ws://localhost:3005/channel/room/${idOfRoom}`);
 
@@ -33,15 +32,15 @@ socket.addEventListener('message', (event) => {
         console.log("entrou no story deleted");
         deleteStory(object.id);
     }
-    if (object.type === "Voting") {
+    if (object.type === "voting") {
         console.log("entrou no start story")
 
-        getRoomId();
+        activeStory();
     }
     if (object.type === 'add_story') {
         console.log("entrou no adicionar story")
-
         room.story.push(object);
+        addStory(object)
     }
 });
 
@@ -59,6 +58,8 @@ async function getRoom() {
     room = result;
     stories = result.story;
     usersList = userResult;
+
+    if (room.storyActive != null) { activeStory() }
 }
 
 async function getRoomId() {
@@ -70,6 +71,13 @@ async function getRoomId() {
     room = result;
 }
 
+async function handlerCreateStory(event) {
+    var storyName = inputStory.value
+    inputStory.value = "";
+
+    var story = await reqCreateStories(storyName);
+    addStory(story)
+}
 
 function deleteStory(idStory) {
     const index = stories.findIndex(story => story.id == idStory);
@@ -78,12 +86,20 @@ function deleteStory(idStory) {
     reqDeleteStories(idStory);
 }
 
-function renderRoom() {
-    // var lobbyButtons = document.querySelector(".lobby-buttons");
-    // var apresentation = document.querySelector(".apresentation");
+function addStory(story) {
+    const exist = stories.some(s => s.id == story.id);
+
+    if (!exist) {
+        const element = createStory(story);
+        story.element = element;
+        storiesContent.appendChild(element);
+        stories.push(story);
+    }
+}
+
+function renderStory() {
 
     stories = stories.map(story => {
-        console.log(story);
         const element = createStory(story);
         storiesContent.appendChild(element);
 
@@ -92,21 +108,24 @@ function renderRoom() {
 }
 
 function createStory(storyData) {
+
     const story = document.createElement("div");
     story.classList.add("story");
 
-    if(storyData.voting == true) story.classList.add("is-voting");
+    if (room.storyActive == storyData.id) story.classList.add("is-voting");
 
     const content = `
-        <p>${storyData.storyName}</p>
+        <div class="story-name">
+            <p>${storyData.storyName}</p>
+        </div>
         <p>${intlVar.format(new Date(storyData.createdAt))}</p>
         <div class="story-icons">
-            <a onclick="activatingStories(${storyData.id})"><i class="ph ph-play"></i></a>
-            <a onclick="deleteStories(${storyData.id})"><i class="ph ph-trash"></i></a>
+            <a onclick="activatingStoryRequest(${storyData.id})"><i class="ph ph-play"></i></a>
+            <a onclick="deleteStory(${storyData.id})"><i class="ph ph-trash"></i></a>
         </div>`;
 
     story.innerHTML = content;
-    
+
     return story
 }
 
@@ -114,15 +133,13 @@ function users() {
     var div_players = document.querySelector(".div-players")
     div_players.innerHTML = '';
 
-    console.log(usersList)
-
     usersList.forEach(user => {
         div_players.innerHTML += `
             <span class="player">
                 <i class="ph ph-user-circle-gear"></i>
                 <h2>${user.Name}</h2>
                 <div class="player-voto" id="player-voto-${user.id}">
-
+                    
                 </div>
             </span>
         `;
@@ -131,7 +148,7 @@ function users() {
 
 async function reqDeleteStories(id) {
     try {
-        const result = await Handler({
+        await Handler({
             url: `story/${id}`,
             param: null,
             method: "DELETE"
@@ -141,73 +158,100 @@ async function reqDeleteStories(id) {
     }
 }
 
-async function activatingStories(storyId) {
+async function reqCreateStories(storyName) {
     try {
-        const object = {
-            storyId: storyId,
+        const body = {
+            storyName: storyName,
+            roomId: Number(idOfRoom)
         }
 
         const result = await Handler({
-            url: `story/Voting/${idOfRoom}`,
-            param: object,
-            method: "PUT"
+            url: `story`,
+            param: body,
+            method: "POST"
         });
 
-        console.log(result)
+        if (result) {
+            return result
+        }
+
     } catch (e) {
         alert(e)
     }
 }
 
-var addStory = document.querySelector(".add-stories")
-var addStoryDialog = document.querySelector("#add-story-dialog")
-var buttonSend = document.querySelector(".button-send")
-var inputStory = document.querySelector(".input-story")
+async function activatingStoryRequest(storyId) {
+    try {
+        const storyIdObject = {
+            storyActive: storyId,
+        }
 
-addStory.addEventListener('click', function () {
-    addStoryDialog.showModal();
-})
+        const result = await Handler({
+            url: `activeStory/${idOfRoom}`,
+            param: storyIdObject,
+            method: "PUT"
+        });
 
-buttonSend.addEventListener('click', function() {
-    var storyName = inputStory.value
-})
+        if (result) {
+            room = result;
+        }
 
-
-
-//Ouvinte de voto
-
-let socketVote = new WebSocket(`ws://localhost:3005/channel/voto/62`);
-
-socketVote.addEventListener('open', (event) => {
-    console.log('Conectado ao servidor WebSocket Vote');
-});
-
-socketVote.addEventListener('message', (event) => {
-    const vote = JSON.parse(event.data);
-
-    console.log(vote);
-});
-
-async function clickVote(vote) {
-    const body = {
-        userId: user.id,
-        vote: vote,
-        storyId: 62 //localStorage.getItem("activeStorie")
+    } catch (e) {
+        alert(e)
     }
-
-    const result = await Handler({
-        url: `vote`,
-        param: body,
-        method: "POST"
-    });
-
-    console.log(result)
 }
 
-function vote(object) {
+function activeStory() {
+    var lobbyButtons = document.querySelector(".lobby-buttons");
+    var apresentation = document.querySelector(".apresentation");
+
+    lobbyButtons.style.display = "grid";
+    apresentation.style.display = "none";
+
+    let socketVote
+
+    if (socketVote) {
+        socketVote.close();
+    }
+
+    socketVote = new WebSocket(`ws://localhost:3005/channel/voto/${Number(room.storyActive)}`);
+    socketVote.addEventListener('open', (event) => {
+        console.log(`Conectado ao servidor WebSocket Vote do story ${Number(room.storyActive)}`);
+    });
+
+    socketVote.addEventListener('message', (event) => {
+        const vote = JSON.parse(event.data);
+    
+        if (vote.type == 'vote') {
+            createVote(vote)
+        }
+        console.log(vote)
+    });
+}
+
+async function clickVote(vote) {
+    try {
+        const body = {
+            userId: user.id,
+            vote: vote,
+            storyId: room.storyActive
+        }
+
+        const result = await Handler({
+            url: `vote`,
+            param: body,
+            method: "POST"
+        });
+
+    } catch (e) {
+        console.log(e)
+    }
+
+}
+
+function createVote(object) {
     var player_voto = document.querySelector(`#player-voto-${object.userId}`);
 
-    console.log(object)
     player_voto.innerHTML = `
         <p>${object.vote}</p>
     `;

@@ -218,11 +218,21 @@ body {
     width: 95%;
     height: 30px;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     border-radius: 8px;
     font-size: 20px;
     color: #f1f1f1;
     padding: 20px;
+}
+
+.story p{
+    display: flex;
+    flex: 1;
+}
+
+.story-name{
+    max-width: 45%;
+    width: 45%;
 }
 
 .story:hover {
@@ -238,14 +248,8 @@ body {
     cursor: pointer;
 }
 
-.division {
-    height: 2px;
-    width: 75%;
-    background-color: #2c352c;
-}
-
-span.story>p {
-    flex: 33.3%;
+.is-voting{
+    background-color: #555 !important;
 }
 
 /* olha o tab */

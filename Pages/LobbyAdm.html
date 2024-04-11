@@ -18,8 +18,8 @@
                 <input class="input-story" type="text" placeholder="Story Name">
                 <div method="dialog" class="actions-modal">
                     <button value="cancel">Close</button>
-                    <button value="send" class="button-send">Send</button>
-                   
+                    <button value="send" class="button-send">Create</button>
+
                 </div>
             </form>
         </dialog>
@@ -82,7 +82,7 @@
                         </div>
 
                         <div class="stories-content">
-
+                            
                         </div>
 
                         <div class="stories-completed-content" style="display: none;">
@@ -128,8 +128,18 @@
     <script src="../Content/Script/httphandler.js"></script>
     <script src="../Content/Script/Controller/lobby.controller.js"></script>
     <script>
-       
-        
+        var buttonAddStory = document.querySelector(".add-stories")
+        var addStoryDialog = document.querySelector("#add-story-dialog")
+        var buttonSend = document.querySelector(".button-send")
+        var inputStory = document.querySelector(".input-story")
+
+        buttonAddStory.addEventListener('click', function () {
+            addStoryDialog.showModal();
+        })
+
+        buttonSend.addEventListener('click', handlerCreateStory)
+
+
     </script>
 </body>
 
