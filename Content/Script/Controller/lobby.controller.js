@@ -120,7 +120,7 @@ function createStory(storyData) {
         </div>
         <p>${intlVar.format(new Date(storyData.createdAt))}</p>
         <div class="story-icons">
-            <a onclick="activatingStoryRequest(${storyData.id})"><i class="ph ph-play"></i></a>
+            <a onclick="(${storyData.id})"><i class="ph ph-play"></i></a>
             <a onclick="deleteStory(${storyData.id})"><i class="ph ph-trash"></i></a>
         </div>`;
 
