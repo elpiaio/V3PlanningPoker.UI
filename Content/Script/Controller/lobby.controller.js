@@ -2,18 +2,26 @@ let room = [];
 let usersList = [];
 let stories = [];
 
+let users = [];
+
+var lobbyButtons = document.querySelector(".lobby-buttons");
 var storiesContent = document.querySelector(".stories-content");
+var divPlayers = document.querySelector(".div-players")
+var apresentation = document.querySelector(".apresentation");
 
 let loaded = false; // Variável para controlar se os dados foram carregados
 const intlVar = new Intl.DateTimeFormat('pt-BR');
 const user = JSON.parse(localStorage.getItem("userId"));
 const idOfRoom = localStorage.getItem("idRoom")
+var activeStoryId;
 var ativo = false;
 
 if (!loaded) { // Verifica se os dados já foram carregados
     getRoom().then(() => {
         renderStory();
-        users();
+        //renderUsers();
+        userVote();
+        renderUsers();
         loaded = true; // Marca os dados como carregados
     });
 }
@@ -35,12 +43,25 @@ socket.addEventListener('message', (event) => {
     if (object.type === "voting") {
         console.log("entrou no start story")
 
+        activeStoryId = object.storyActive
         activeStory();
     }
     if (object.type === 'add_story') {
         console.log("entrou no adicionar story")
         room.story.push(object);
         addStory(object)
+    }
+    if (object.type === 'show_Votes') {
+
+        showVotesFront(object)
+    }
+    if (object.type === 'Refresh') {
+
+        RefreshVotes(object)
+    }
+    if (object.type === 'finish_Votation') {
+
+        showResultsFront(object)
     }
 });
 
@@ -59,6 +80,9 @@ async function getRoom() {
     stories = result.story;
     usersList = userResult;
 
+    activeStoryId = room.storyActive
+
+    if(result.storyActive === null) return;
     if (room.storyActive != null) { activeStory() }
 }
 
@@ -97,16 +121,6 @@ function addStory(story) {
     }
 }
 
-function renderStory() {
-
-    stories = stories.map(story => {
-        const element = createStory(story);
-        storiesContent.appendChild(element);
-
-        return { ...story, element }
-    });
-}
-
 function createStory(storyData) {
 
     const story = document.createElement("div");
@@ -120,7 +134,7 @@ function createStory(storyData) {
         </div>
         <p>${intlVar.format(new Date(storyData.createdAt))}</p>
         <div class="story-icons">
-            <a onclick="(${storyData.id})"><i class="ph ph-play"></i></a>
+            <a onclick="activatingStoryRequest(${storyData.id})"><i class="ph ph-play"></i></a>
             <a onclick="deleteStory(${storyData.id})"><i class="ph ph-trash"></i></a>
         </div>`;
 
@@ -129,21 +143,73 @@ function createStory(storyData) {
     return story
 }
 
-function users() {
-    var div_players = document.querySelector(".div-players")
-    div_players.innerHTML = '';
 
-    usersList.forEach(user => {
-        div_players.innerHTML += `
-            <span class="player">
-                <i class="ph ph-user-circle-gear"></i>
-                <h2>${user.Name}</h2>
-                <div class="player-voto" id="player-voto-${user.id}">
-                    
-                </div>
-            </span>
-        `;
+function renderStory() {
+
+    stories = stories.map(story => {
+        const element = createStory(story);
+        storiesContent.appendChild(element);
+
+        return { ...story, element }
+    });
+}
+
+
+function createUsers(userData) {
+
+    const user = document.createElement("div");
+    user.classList.add("player")
+
+    const content = ` 
+        <i class="ph ph-user-circle-gear"></i>
+        <h2>${userData.Name}</h2>
+        <div class="player-voto" id="player-voto-${userData.id}">
+            ${userData.vote ? `<p>${userData.showVote ? userData.vote : '<i class="ph ph-check-circle"></i>'}</p>` : `<p></p>`}     
+        </div>
+    `;
+
+    user.innerHTML = content;   
+    return user;
+}
+
+function renderUsers() {
+    usersList = usersList.map(user => {
+        const element = createUsers(user);
+        divPlayers.appendChild(element)
+
+        return { ...user, element }
     })
+}
+
+function userVote() {
+    usersList = usersList.map((user) => {
+        const element = createUsers(user);
+        return {
+            ...user,
+            element
+        }
+    }) 
+
+
+    const index = room.story.findIndex(s => s.id == activeStoryId);
+
+    usersList = usersList.map(user => {
+        const userVote = room.story[index].votes.find(vote => vote.userId === user.id);
+        if (userVote) {
+            return {
+                ...user,
+                vote: userVote.vote,
+                showVote: room.story[index].showVotes
+            };
+        } else {
+            return {
+                ...user,
+                showVote: room.story[index].showVotes
+            };
+        }
+    });
+
+    console.log(usersList);
 }
 
 async function reqDeleteStories(id) {
@@ -180,11 +246,164 @@ async function reqCreateStories(storyName) {
     }
 }
 
+function showVotesFront(storyData) {
+    var showVote = document.querySelector(".show-vote")
+
+   
+    const index = room.story.findIndex(story => story.id == storyData.id);
+    room.story[index] = storyData;
+    stories[index] = room.story[index]
+
+    userVote();
+
+    divPlayers.innerHTML = '';
+    if (storyData.showVotes == true) {
+        showVote.innerHTML = '<i class="ph ph-eye-slash"></i>';
+    } else {
+        showVote.innerHTML = '<i class="ph ph-eye"></i>';
+    }
+    renderUsers();
+}
+
+async function reqShowVotes() {
+    try {
+        const body = {
+            storyId: activeStoryId
+        }
+
+        const result = await Handler({
+            url: `story/showVotes/${idOfRoom}`,
+            param: body,
+            method: "PUT"
+        });
+
+    } catch (e) {
+        alert(e)
+    }
+}
+
+function RefreshVotes(request) {
+    
+
+    divPlayers.innerHTML = '';
+    const index = room.story.findIndex(story => story.id == activeStoryId);
+    room.story[index].votes = [];
+
+    usersList.forEach(user => {
+        user.vote = null
+    });
+
+    userVote();
+    renderUsers();
+}
+
+async function reqRefreshVotes() {
+    try {
+        const body = {
+            storyId: activeStoryId
+        }
+
+        const result = await Handler({
+            url: `story/Refresh/${idOfRoom}`,
+            param: body,
+            method: "PUT"
+        });
+
+    } catch (e) {
+        alert(e)
+    }
+}
+
+function randomColor() {
+    const r = Math.floor(Math.random() * 0);
+    const g = Math.floor(Math.random() * 256);
+    const b = Math.floor(Math.random() * 100);
+    return `rgb(${r}, ${g}, ${b})`;
+}
+
+
+function chartResults(labels, backgroundColors, counter) {
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: 'quantidade de votos: ',
+            data: labels.map(label => counter[label]),
+            backgroundColor: backgroundColors,
+            hoverOffset: 8,
+            borderWidth: 0,
+        }]
+    };
+
+    const ctx = document.getElementById('myChart');
+
+    const config = {
+        type: 'doughnut',
+        data: data,
+    };
+
+    new Chart(ctx, config);
+}
+
+function showResultsFront(storyData) {
+    var votationResult = document.querySelector(".votation-result")
+    votationResult.style.display = 'flex';
+    lobbyButtons.style.display = "none";
+    apresentation.style.display = "none";
+
+    const index = room.story.findIndex(story => story.id == storyData.id);
+    room.story[index] = storyData;
+    stories[index] = storyData
+
+    const counter = {};
+
+    const votes = room.story[index].votes;
+    votes.forEach(vote => {
+        if (counter[vote.vote]) {
+            counter[vote.vote] += 1;
+        } else {
+            counter[vote.vote] = 1;
+        }
+    });
+
+    const labels = Object.keys(counter);
+    const backgroundColors = labels.map(() => randomColor());
+
+    chartResults(labels, backgroundColors, counter);
+
+
+}
+
+async function showResultsRequest() {
+    try {
+        const storyIdObject = {
+            storyId: activeStoryId,
+        }
+
+        console.log(activeStoryId)
+
+        const result = await Handler({
+            url: `story/finishVotation/${idOfRoom}`,
+            param: storyIdObject,
+            method: "PUT"
+        });
+
+        if (result) {
+            room = result;
+        }
+
+    } catch (e) {
+        alert(e)
+    }
+}
+
+
 async function activatingStoryRequest(storyId) {
     try {
         const storyIdObject = {
             storyActive: storyId,
         }
+
+        console.log(storyId)
 
         const result = await Handler({
             url: `activeStory/${idOfRoom}`,
@@ -202,14 +421,11 @@ async function activatingStoryRequest(storyId) {
 }
 
 function activeStory() {
-    var lobbyButtons = document.querySelector(".lobby-buttons");
-    var apresentation = document.querySelector(".apresentation");
 
     lobbyButtons.style.display = "grid";
     apresentation.style.display = "none";
 
     let socketVote
-
     if (socketVote) {
         socketVote.close();
     }
@@ -221,7 +437,7 @@ function activeStory() {
 
     socketVote.addEventListener('message', (event) => {
         const vote = JSON.parse(event.data);
-    
+
         if (vote.type == 'vote') {
             createVote(vote)
         }
@@ -246,14 +462,18 @@ async function clickVote(vote) {
     } catch (e) {
         console.log(e)
     }
-
 }
 
 function createVote(object) {
-    var player_voto = document.querySelector(`#player-voto-${object.userId}`);
+    const playerVoto = document.querySelector(`#player-voto-${object.userId}`);
 
-    player_voto.innerHTML = `
-        <p>${object.vote}</p>
+    const index = usersList.findIndex(user => user.id === object.userId);
+    const userData = usersList[index];
+    userData.vote = object.vote;
+
+    playerVoto.innerHTML = '';
+    playerVoto.innerHTML = `
+        <p>${userData.showVote ? userData.vote : '<i class="ph ph-check-circle"></i>'}</p>
     `;
 }
 

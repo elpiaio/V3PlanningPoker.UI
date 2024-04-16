@@ -71,6 +71,10 @@
                     <div class="apresentation">
                         <H1>Crie ou ative algum story</H1>
                     </div>
+
+                    <div class="votation-result">
+                        <canvas id="myChart"></canvas>
+                    </div>
                 </div>
 
                 <div class="stories-root">
@@ -82,7 +86,7 @@
                         </div>
 
                         <div class="stories-content">
-                            
+
                         </div>
 
                         <div class="stories-completed-content" style="display: none;">
@@ -116,15 +120,14 @@
 
                 <div class="options-buttons">
                     <button class="add-stories" title="Adicionar Stories"><i class="ph ph-plus"></i></button>
-                    <button class="finish" title="Exibir Resultados"><i class="ph ph-presentation-chart"></i></button>
-                    <button class="show-vote" title="Exibir Votação"><i class="ph ph-eye-slash"></i></button>
-                    <button class="refresh" title="Reiniciar Votação"><i
-                            class="ph ph-arrows-counter-clockwise"></i></button>
-                </div>
+                    <button class="finish" title="Exibir Resultados" onclick="showResultsRequest()"><i class="ph ph-presentation-chart"></i></button>
+                    <button class="show-vote" title="Exibir Votos" onclick="reqShowVotes()"><i class="ph ph-eye-slash"></i></button>
+                    <button class="refresh" title="Reiniciar Votação" onclick="reqRefreshVotes()"><i class="ph ph-arrows-counter-clockwise"></i></button>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../Content/Script/httphandler.js"></script>
     <script src="../Content/Script/Controller/lobby.controller.js"></script>
     <script>
@@ -135,10 +138,10 @@
 
         buttonAddStory.addEventListener('click', function () {
             addStoryDialog.showModal();
-        })
-
+        });
         buttonSend.addEventListener('click', handlerCreateStory)
 
+        
 
     </script>
 </body>
