@@ -2,8 +2,6 @@ let room = [];
 let usersList = [];
 let stories = [];
 
-let users = [];
-
 var lobbyButtons = document.querySelector(".lobby-buttons");
 var storiesContent = document.querySelector(".stories-content");
 var divPlayers = document.querySelector(".div-players")
@@ -34,34 +32,32 @@ socket.addEventListener('open', (event) => {
 
 socket.addEventListener('message', (event) => {
     const object = JSON.parse(event.data);
-    console.log("ouvinte da room")
 
-    if (object.type === 'story_deleted') {
-        console.log("entrou no story deleted");
-        deleteStory(object.id);
-    }
-    if (object.type === "voting") {
-        console.log("entrou no start story")
+    switch (object.type) {
+        case 'story_deleted':
+            deleteStory(object.id);
+            
+        case 'voting':
+            activeStoryId = object.storyActive;
+            activeStory();
+            break;
 
-        activeStoryId = object.storyActive
-        activeStory();
-    }
-    if (object.type === 'add_story') {
-        console.log("entrou no adicionar story")
-        room.story.push(object);
-        addStory(object)
-    }
-    if (object.type === 'show_Votes') {
+        case 'add_story':
+            room.story.push(object);
+            addStory(object);
+            break;
 
-        showVotesFront(object)
-    }
-    if (object.type === 'Refresh') {
+        case 'show_Votes':
+            showVotesFront(object);
+            break;
 
-        RefreshVotes(object)
-    }
-    if (object.type === 'finish_Votation') {
+        case 'Refresh':
+            RefreshVotes(object);
+            break;
 
-        showResultsFront(object)
+        case 'finish_Votation':
+            showResultsFront(object);
+            break;
     }
 });
 
@@ -82,7 +78,7 @@ async function getRoom() {
 
     activeStoryId = room.storyActive
 
-    if(result.storyActive === null) return;
+    if (result.storyActive === null) return;
     if (room.storyActive != null) { activeStory() }
 }
 
@@ -168,7 +164,7 @@ function createUsers(userData) {
         </div>
     `;
 
-    user.innerHTML = content;   
+    user.innerHTML = content;
     return user;
 }
 
@@ -188,7 +184,7 @@ function userVote() {
             ...user,
             element
         }
-    }) 
+    })
 
 
     const index = room.story.findIndex(s => s.id == activeStoryId);
@@ -237,10 +233,6 @@ async function reqCreateStories(storyName) {
             method: "POST"
         });
 
-        if (result) {
-            return result
-        }
-
     } catch (e) {
         alert(e)
     }
@@ -249,7 +241,7 @@ async function reqCreateStories(storyName) {
 function showVotesFront(storyData) {
     var showVote = document.querySelector(".show-vote")
 
-   
+
     const index = room.story.findIndex(story => story.id == storyData.id);
     room.story[index] = storyData;
     stories[index] = room.story[index]
@@ -283,8 +275,6 @@ async function reqShowVotes() {
 }
 
 function RefreshVotes(request) {
-    
-
     divPlayers.innerHTML = '';
     const index = room.story.findIndex(story => story.id == activeStoryId);
     room.story[index].votes = [];
@@ -346,11 +336,12 @@ function chartResults(labels, backgroundColors, counter) {
 
 function showResultsFront(storyData) {
     var votationResult = document.querySelector(".votation-result")
+
     votationResult.style.display = 'flex';
     lobbyButtons.style.display = "none";
     apresentation.style.display = "none";
 
-    const index = room.story.findIndex(story => story.id == storyData.id);
+    const index = room.story.findIndex(s => s.id == storyData.id);
     room.story[index] = storyData;
     stories[index] = storyData
 
@@ -369,8 +360,6 @@ function showResultsFront(storyData) {
     const backgroundColors = labels.map(() => randomColor());
 
     chartResults(labels, backgroundColors, counter);
-
-
 }
 
 async function showResultsRequest() {
@@ -386,10 +375,6 @@ async function showResultsRequest() {
             param: storyIdObject,
             method: "PUT"
         });
-
-        if (result) {
-            room = result;
-        }
 
     } catch (e) {
         alert(e)
@@ -410,10 +395,6 @@ async function activatingStoryRequest(storyId) {
             param: storyIdObject,
             method: "PUT"
         });
-
-        if (result) {
-            room = result;
-        }
 
     } catch (e) {
         alert(e)
