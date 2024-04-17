@@ -17,7 +17,7 @@
                 <h2>Add Story</h2>
                 <input class="input-story" type="text" placeholder="Story Name">
                 <div method="dialog" class="actions-modal">
-                    <button value="cancel">Close</button>
+                    <button value="cancel">Close</button> 
                     <button value="send" class="button-send">Create</button>
 
                 </div>
@@ -30,40 +30,50 @@
             <div class="lobby-stories-buttons">
                 <div class="lobby-center">
                     <div class="lobby-buttons">
-                        <button type="button" value="1" id="card1" onclick="clickVote(1)" class="btn-lobby-1">
+                        <button type="button" value="0.5" id="card-meio" onclick="clickVote(`0.5`)" class="btn-lobby-1">
+                            <div class="button-detail">
+                                <strong>0.5</strong>
+                            </div>
+                        </button>
+                        <button type="button" value="1" id="card1" onclick="clickVote(`1`)" class="btn-lobby-1">
                             <div class="button-detail">
                                 <strong>1</strong>
                             </div>
                         </button>
-                        <button type="button" value="2" id="card2" onclick="clickVote(2)" class="btn-lobby-2">
+                        <button type="button" value="2" id="card2" onclick="clickVote(`2`)" class="btn-lobby-2">
                             <div class="button-detail">
                                 <strong>2</strong>
                             </div>
                         </button>
-                        <button type="button" value="3" id="card3" onclick="clickVote(3)" class="btn-lobby-3">
+                        <button type="button" value="3" id="card3" onclick="clickVote(`3`)" class="btn-lobby-3">
                             <div class="button-detail">
                                 <strong>3</strong>
                             </div>
                         </button>
-                        <button type="button" value="5" id="card5" onclick="clickVote(5)" class="btn-lobby-5">
+                        <button type="button" value="5" id="card5" onclick="clickVote(`5`)" class="btn-lobby-5">
                             <div class="button-detail">
                                 <strong>5</strong>
                             </div>
                         </button>
-                        <button type="button" value="8" id="card8" onclick="clickVote(8)" class="btn-lobby-8">
+                        <button type="button" value="8" id="card8" onclick="clickVote(`8`)" class="btn-lobby-8">
                             <div class="button-detail">
                                 <strong>8</strong>
                             </div>
                         </button>
-                        <button type="button" value="13" id="card13" onclick="clickVote(13)" class="btn-lobby-13">
+                        <button type="button" value="coffee" id="cardCoffee" onclick="clickVote(`coffee`)"
+                            class="btn-lobby-coffee">
+                            <div class="button-detail">
+                                <strong><i class="ph ph-coffee"></i></strong>
+                            </div>
+                        </button>
+                        <button type="button" value="13" id="card13" onclick="clickVote(`13`)" class="btn-lobby-13">
                             <div class="button-detail">
                                 <strong>13</strong>
                             </div>
                         </button>
-                        <button type="button" value="coffee" id="cardCoffee" onclick="clickVote('coffee')"
-                            class="btn-lobby-coffee">
+                        <button type="button" value="?" id="card-?" onclick="clickVote('?')">
                             <div class="button-detail">
-                                <strong><i class="ph ph-coffee"></i></strong>
+                                <strong>?</i></strong>
                             </div>
                         </button>
                     </div>
@@ -81,8 +91,8 @@
                     <div class="stories">
                         <div class="tab">
                             <button onclick="openTab('stories-content')" class="button-st">Active Stories</button>
-                            <button onclick="openTab('stories-completed-content')" class="button-stc">Finished
-                                Stories</button>
+                            <button onclick="openTab('stories-completed-content')" class="button-stc">Finished Stories</button>
+                               
                         </div>
 
                         <div class="stories-content">
@@ -140,9 +150,7 @@
             addStoryDialog.showModal();
         });
         buttonSend.addEventListener('click', handlerCreateStory)
-
         
-
     </script>
 </body>
 

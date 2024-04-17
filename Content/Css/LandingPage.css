@@ -54,6 +54,7 @@ body {
     display: flex;
     gap: 8px;
     align-items: center;
+    margin-right: 10px;
 }
 
 .top-bar-links button {

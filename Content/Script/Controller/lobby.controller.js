@@ -2,8 +2,11 @@ let room = [];
 let usersList = [];
 let stories = [];
 
+var myLineChart;
+
 var lobbyButtons = document.querySelector(".lobby-buttons");
 var storiesContent = document.querySelector(".stories-content");
+var storiesCompletedContent = document.querySelector(".stories-completed-content")
 var divPlayers = document.querySelector(".div-players")
 var apresentation = document.querySelector(".apresentation");
 
@@ -17,7 +20,6 @@ var ativo = false;
 if (!loaded) { // Verifica se os dados já foram carregados
     getRoom().then(() => {
         renderStory();
-        //renderUsers();
         userVote();
         renderUsers();
         loaded = true; // Marca os dados como carregados
@@ -36,10 +38,16 @@ socket.addEventListener('message', (event) => {
     switch (object.type) {
         case 'story_deleted':
             deleteStory(object.id);
-            
+
         case 'voting':
-            activeStoryId = object.storyActive;
-            activeStory();
+            getRoom().then(() => {
+                storiesContent.innerHTML = '';
+                storiesCompletedContent.innerHTML = '';
+                divPlayers.innerHTML = '';
+                renderStory();
+                userVote();
+                renderUsers();
+            })
             break;
 
         case 'add_story':
@@ -78,17 +86,7 @@ async function getRoom() {
 
     activeStoryId = room.storyActive
 
-    if (result.storyActive === null) return;
     if (room.storyActive != null) { activeStory() }
-}
-
-async function getRoomId() {
-    const result = await Handler({
-        url: `room/${idOfRoom}`,
-        method: "GET"
-    });
-
-    room = result;
 }
 
 async function handlerCreateStory(event) {
@@ -130,7 +128,7 @@ function createStory(storyData) {
         </div>
         <p>${intlVar.format(new Date(storyData.createdAt))}</p>
         <div class="story-icons">
-            <a onclick="activatingStoryRequest(${storyData.id})"><i class="ph ph-play"></i></a>
+            <a onclick="activatingStoryRequest(${storyData.id})">${storyData.voted ? '<i class="ph ph-eye"></i>' : '<i class="ph ph-play"></i>'}</a>
             <a onclick="deleteStory(${storyData.id})"><i class="ph ph-trash"></i></a>
         </div>`;
 
@@ -139,12 +137,15 @@ function createStory(storyData) {
     return story
 }
 
-
 function renderStory() {
-
     stories = stories.map(story => {
         const element = createStory(story);
-        storiesContent.appendChild(element);
+
+        if (!story.voted) {
+            storiesContent.appendChild(element);
+        } else {
+            storiesCompletedContent.appendChild(element);
+        }
 
         return { ...story, element }
     });
@@ -155,6 +156,10 @@ function createUsers(userData) {
 
     const user = document.createElement("div");
     user.classList.add("player")
+
+    if (userData.vote == 'coffee') {
+        userData.vote = '<i class="ph ph-coffee"></i>';
+    }
 
     const content = ` 
         <i class="ph ph-user-circle-gear"></i>
@@ -190,17 +195,27 @@ function userVote() {
     const index = room.story.findIndex(s => s.id == activeStoryId);
 
     usersList = usersList.map(user => {
-        const userVote = room.story[index].votes.find(vote => vote.userId === user.id);
+
+        let userVote = [];
+
+        const story = room.story[index];
+
+        if (story && story.votes) {
+            userVote = story.votes.find(vote => vote.userId === user.id);
+        }
+
+        const showVotes = story ? story.showVotes : undefined; //chat GPT
+
         if (userVote) {
             return {
                 ...user,
                 vote: userVote.vote,
-                showVote: room.story[index].showVotes
+                showVote: showVotes
             };
         } else {
             return {
                 ...user,
-                showVote: room.story[index].showVotes
+                showVote: showVotes
             };
         }
     });
@@ -241,7 +256,6 @@ async function reqCreateStories(storyName) {
 function showVotesFront(storyData) {
     var showVote = document.querySelector(".show-vote")
 
-
     const index = room.story.findIndex(story => story.id == storyData.id);
     room.story[index] = storyData;
     stories[index] = room.story[index]
@@ -250,9 +264,13 @@ function showVotesFront(storyData) {
 
     divPlayers.innerHTML = '';
     if (storyData.showVotes == true) {
-        showVote.innerHTML = '<i class="ph ph-eye-slash"></i>';
+        try {
+            showVote.innerHTML = '<i class="ph ph-eye-slash"></i>';
+        } catch { }
     } else {
-        showVote.innerHTML = '<i class="ph ph-eye"></i>';
+        try {
+            showVote.innerHTML = '<i class="ph ph-eye"></i>';
+        } catch { }
     }
     renderUsers();
 }
@@ -305,9 +323,9 @@ async function reqRefreshVotes() {
 }
 
 function randomColor() {
-    const r = Math.floor(Math.random() * 0);
+    const r = Math.floor(Math.random() * 256);
     const g = Math.floor(Math.random() * 256);
-    const b = Math.floor(Math.random() * 100);
+    const b = Math.floor(Math.random() * 256);
     return `rgb(${r}, ${g}, ${b})`;
 }
 
@@ -331,7 +349,7 @@ function chartResults(labels, backgroundColors, counter) {
         data: data,
     };
 
-    new Chart(ctx, config);
+    myLineChart = new Chart(ctx, config);
 }
 
 function showResultsFront(storyData) {
@@ -348,7 +366,7 @@ function showResultsFront(storyData) {
     const counter = {};
 
     const votes = room.story[index].votes;
-    votes.forEach(vote => {
+    votes.forEach(vote => {   //chatGPT
         if (counter[vote.vote]) {
             counter[vote.vote] += 1;
         } else {
@@ -380,7 +398,6 @@ async function showResultsRequest() {
         alert(e)
     }
 }
-
 
 async function activatingStoryRequest(storyId) {
     try {
@@ -453,6 +470,14 @@ function createVote(object) {
     userData.vote = object.vote;
 
     playerVoto.innerHTML = '';
+
+    if (userData.vote == 'coffee') {
+        playerVoto.innerHTML = `
+            <p>${userData.showVote ? '<i class="ph ph-coffee"></i>' : '<i class="ph ph-check-circle"></i>'}</p>
+        `;
+        return;
+    }
+
     playerVoto.innerHTML = `
         <p>${userData.showVote ? userData.vote : '<i class="ph ph-check-circle"></i>'}</p>
     `;

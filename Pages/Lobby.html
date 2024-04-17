@@ -18,53 +18,68 @@
     <div class="root-lobby" id="root-lobby">
         <!--planning poker lobby-->
         <div class="lobby">
-           
+
             <!--botoes(cards)-->
             <div class="lobby-stories-buttons">
                 <div class="lobby-buttons">
                     <!--SOMENTE BOTOES-->
-                    <button type="button" value="1" id="card1" onclick="clickVote(1)" class="btn-lobby-1">
+                    <button type="button" value="0.5" id="card-meio" onclick="clickVote(`0.5`)" class="btn-lobby-1">
+                        <div class="button-detail">
+                            <strong>0.5</strong>
+                        </div>
+                    </button>
+                    <button type="button" value="1" id="card1" onclick="clickVote(`1`)" class="btn-lobby-1">
                         <div class="button-detail">
                             <strong>1</strong>
                         </div>
                     </button>
-                    <button type="button" value="2" id="card2" onclick="clickVote(2)" class="btn-lobby-2">
+                    <button type="button" value="2" id="card2" onclick="clickVote(`2`)" class="btn-lobby-2">
                         <div class="button-detail">
                             <strong>2</strong>
                         </div>
                     </button>
-                    <button type="button" value="3" id="card3" onclick="clickVote(3)" class="btn-lobby-3">
+                    <button type="button" value="3" id="card3" onclick="clickVote(`3`)" class="btn-lobby-3">
                         <div class="button-detail">
                             <strong>3</strong>
                         </div>
                     </button>
-                    <button type="button" value="5" id="card5" onclick="clickVote(5)" class="btn-lobby-5">
+                    <button type="button" value="5" id="card5" onclick="clickVote(`5`)" class="btn-lobby-5">
                         <div class="button-detail">
                             <strong>5</strong>
                         </div>
                     </button>
-                    <button type="button" value="8" id="card8" onclick="clickVote(8)" class="btn-lobby-8">
+                    <button type="button" value="8" id="card8" onclick="clickVote(`8`)" class="btn-lobby-8">
                         <div class="button-detail">
                             <strong>8</strong>
                         </div>
                     </button>
-                    <button type="button" value="13" id="card13" onclick="clickVote(13)" class="btn-lobby-13">
+                    <button type="button" value="coffee" id="cardCoffee"
+                        onclick="clickVote(`<i class='ph ph-coffee'></i>`)" class="btn-lobby-coffee">
+                        <div class="button-detail">
+                            <strong><i class="ph ph-coffee"></i></strong>
+                        </div>
+                    </button>
+                    <button type="button" value="13" id="card13" onclick="clickVote(`13`)" class="btn-lobby-13">
                         <div class="button-detail">
                             <strong>13</strong>
                         </div>
                     </button>
-                    <button type="button" value="coffee" id="cardCoffee" onclick="clickVote('coffee')" class="btn-lobby-coffee">
+                    <button type="button" value="?" id="card-?" onclick="clickVote('?')">
                         <div class="button-detail">
-                            <strong><i class="ph ph-coffee"></i></strong>
+                            <strong>?</i></strong>
                         </div>
                     </button>
                     <!--FIM DOS BOTOES-->
                 </div>
 
                 <div class="apresentation">
-                    <H1>Crie ou ative algum story</H1>
+                    <H1>Aguarde o Adm tomar uma decisão</H1>
                 </div>
-                
+
+                <div class="votation-result">
+                    <canvas id="myChart"></canvas>
+                </div>
+
                 <div class="stories-root">
                     <div class="stories">
                         <div class="tab">
@@ -78,7 +93,16 @@
                         </div>
 
                         <div class="stories-completed-content" style="display: none;">
-                            
+                            <div class="story">
+                                <div class="story-name">
+                                    <p>${storyData.storyName}</p>
+                                </div>
+                                <p>vadia gostosa</p>
+                                <div class="story-icons">
+                                    <a onclick=""><i class="ph ph-play"></i></a>
+                                    <a onclick=""><i class="ph ph-trash"></i></a>
+                                </div>`;
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -90,10 +114,7 @@
 
                 <div class="div-players-root" id="div-players-root">
                     <div class="div-players">
-                        <span class="player">
-                            <i class="ph ph-user-circle-gear"></i>
-                            <h2>Thiago</h2>
-                        </span>
+
                     </div>
                 </div>
 
@@ -109,10 +130,11 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="../Content/Script/httphandler.js"></script>
     <script src="../Content/Script/Controller/lobby.controller.js"></script>
     <script>
-        
+
     </script>
 </body>
 
