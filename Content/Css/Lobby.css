@@ -145,7 +145,7 @@ body {
 }
 
 
-.stories-content {
+.stories-content, .stories-completed-content  {
     margin-top: 10px;
     display: flex;
     flex-direction: column;
@@ -188,6 +188,10 @@ body {
 
 .story-icons i:hover {
     cursor: pointer;
+}
+
+.is-voting{
+    background-color: #555 !important;
 }
 
 .division {

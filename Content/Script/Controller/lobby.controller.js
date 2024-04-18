@@ -2,29 +2,24 @@ let room = [];
 let usersList = [];
 let stories = [];
 
-var myLineChart;
-
 var lobbyButtons = document.querySelector(".lobby-buttons");
 var storiesContent = document.querySelector(".stories-content");
 var storiesCompletedContent = document.querySelector(".stories-completed-content")
 var divPlayers = document.querySelector(".div-players")
 var apresentation = document.querySelector(".apresentation");
+var votationResult = document.querySelector(".votation-result")
 
-let loaded = false; // Variável para controlar se os dados foram carregados
 const intlVar = new Intl.DateTimeFormat('pt-BR');
 const user = JSON.parse(localStorage.getItem("userId"));
 const idOfRoom = localStorage.getItem("idRoom")
 var activeStoryId;
-var ativo = false;
 
-if (!loaded) { // Verifica se os dados já foram carregados
-    getRoom().then(() => {
-        renderStory();
-        userVote();
-        renderUsers();
-        loaded = true; // Marca os dados como carregados
-    });
-}
+getRoom().then(() => {
+    renderStory();
+    userVote();
+    renderUsers();
+
+})
 
 const socket = new WebSocket(`ws://localhost:3005/channel/room/${idOfRoom}`);
 
@@ -38,6 +33,8 @@ socket.addEventListener('message', (event) => {
     switch (object.type) {
         case 'story_deleted':
             deleteStory(object.id);
+
+            break;
 
         case 'voting':
             getRoom().then(() => {
@@ -57,6 +54,7 @@ socket.addEventListener('message', (event) => {
 
         case 'show_Votes':
             showVotesFront(object);
+            myPopup.show();
             break;
 
         case 'Refresh':
@@ -85,6 +83,11 @@ async function getRoom() {
     usersList = userResult;
 
     activeStoryId = room.storyActive
+
+    const some = stories.some(s => s.id == room.storyActive)
+    if(!some){
+        room.storyActive = null
+    }
 
     if (room.storyActive != null) { activeStory() }
 }
@@ -329,6 +332,7 @@ function randomColor() {
     return `rgb(${r}, ${g}, ${b})`;
 }
 
+let myLineChart;
 
 function chartResults(labels, backgroundColors, counter) {
     const data = {
@@ -340,9 +344,13 @@ function chartResults(labels, backgroundColors, counter) {
             hoverOffset: 8,
             borderWidth: 0,
         }]
-    };
+    };  
 
     const ctx = document.getElementById('myChart');
+
+    if (myLineChart) {
+        myLineChart.destroy(); // Destruir o gráfico existente
+    }
 
     const config = {
         type: 'doughnut',
@@ -353,7 +361,6 @@ function chartResults(labels, backgroundColors, counter) {
 }
 
 function showResultsFront(storyData) {
-    var votationResult = document.querySelector(".votation-result")
 
     votationResult.style.display = 'flex';
     lobbyButtons.style.display = "none";
@@ -420,8 +427,15 @@ async function activatingStoryRequest(storyId) {
 
 function activeStory() {
 
-    lobbyButtons.style.display = "grid";
-    apresentation.style.display = "none";
+    const index = stories.findIndex(s => s.id == room.storyActive)
+
+    if (stories[index].voted) {
+        showResultsFront(stories[index])
+    } else {
+        lobbyButtons.style.display = "grid";
+        apresentation.style.display = "none";
+        votationResult.style.display = "none";
+    }
 
     let socketVote
     if (socketVote) {

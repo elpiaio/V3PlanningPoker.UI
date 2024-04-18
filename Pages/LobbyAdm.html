@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../Content/Css/LobbyAdm.css">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <title>lobby Adm</title>
+    <link rel="icon" type="image/x-icon" href="../Public/favicon.jpg">
 </head>
 
 <body>
@@ -17,7 +18,7 @@
                 <h2>Add Story</h2>
                 <input class="input-story" type="text" placeholder="Story Name">
                 <div method="dialog" class="actions-modal">
-                    <button value="cancel">Close</button> 
+                    <button value="cancel">Close</button>
                     <button value="send" class="button-send">Create</button>
 
                 </div>
@@ -91,8 +92,9 @@
                     <div class="stories">
                         <div class="tab">
                             <button onclick="openTab('stories-content')" class="button-st">Active Stories</button>
-                            <button onclick="openTab('stories-completed-content')" class="button-stc">Finished Stories</button>
-                               
+                            <button onclick="openTab('stories-completed-content')" class="button-stc">Finished
+                                Stories</button>
+
                         </div>
 
                         <div class="stories-content">
@@ -130,28 +132,31 @@
 
                 <div class="options-buttons">
                     <button class="add-stories" title="Adicionar Stories"><i class="ph ph-plus"></i></button>
-                    <button class="finish" title="Exibir Resultados" onclick="showResultsRequest()"><i class="ph ph-presentation-chart"></i></button>
-                    <button class="show-vote" title="Exibir Votos" onclick="reqShowVotes()"><i class="ph ph-eye-slash"></i></button>
-                    <button class="refresh" title="Reiniciar Votação" onclick="reqRefreshVotes()"><i class="ph ph-arrows-counter-clockwise"></i></button>
+                    <button class="finish" title="Exibir Resultados" onclick="showResultsRequest()"><i
+                            class="ph ph-presentation-chart"></i></button>
+                    <button class="show-vote" title="Exibir Votos" onclick="reqShowVotes()"><i
+                            class="ph ph-eye-slash"></i></button>
+                    <button class="refresh" title="Reiniciar Votação" onclick="reqRefreshVotes()"><i
+                            class="ph ph-arrows-counter-clockwise"></i></button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../Content/Script/httphandler.js"></script>
-    <script src="../Content/Script/Controller/lobby.controller.js"></script>
-    <script>
-        var buttonAddStory = document.querySelector(".add-stories")
-        var addStoryDialog = document.querySelector("#add-story-dialog")
-        var buttonSend = document.querySelector(".button-send")
-        var inputStory = document.querySelector(".input-story")
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="../Content/Script/httphandler.js"></script>
+        <script src="../Content/Script/Controller/lobby.controller.js"></script>
+        <script>
+            var buttonAddStory = document.querySelector(".add-stories")
+            var addStoryDialog = document.querySelector("#add-story-dialog")
+            var buttonSend = document.querySelector(".button-send")
+            var inputStory = document.querySelector(".input-story")
 
-        buttonAddStory.addEventListener('click', function () {
-            addStoryDialog.showModal();
-        });
-        buttonSend.addEventListener('click', handlerCreateStory)
-        
-    </script>
+            buttonAddStory.addEventListener('click', function () {
+                addStoryDialog.showModal();
+            });
+            buttonSend.addEventListener('click', handlerCreateStory)
+
+        </script>
 </body>
 
 </html>
