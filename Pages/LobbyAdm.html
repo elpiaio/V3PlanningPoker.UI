@@ -20,7 +20,6 @@
                 <div method="dialog" class="actions-modal">
                     <button value="cancel">Close</button>
                     <button value="send" class="button-send">Create</button>
-
                 </div>
             </form>
         </dialog>
@@ -94,7 +93,6 @@
                             <button onclick="openTab('stories-content')" class="button-st">Active Stories</button>
                             <button onclick="openTab('stories-completed-content')" class="button-stc">Finished
                                 Stories</button>
-
                         </div>
 
                         <div class="stories-content">
@@ -114,20 +112,17 @@
 
                 <div class="div-players-root" id="div-players-root">
                     <div class="div-players">
-                        <!-- <span class="player">
-                            <i class="ph ph-user-circle-gear"></i>
-                            <h2>Thiago</h2>
-                        </span> -->
+
                     </div>
                 </div>
 
                 <div class="invite-token">
-                    <h2>token not found</h2><i onclick="" class="ph ph-copy"></i>
+                    <h2 class="invite-token-text">token not found</h2><i onclick="copyLinkInvite()"class="ph ph-copy"></i>
                 </div>
 
                 <div class="user-information">
                     <i class="ph ph-user-circle"></i>
-                    <H2 class="informations-name" id="informations-name">Thiago</H2>
+                    <H2 class="informations-name" id="informations-name">Name</H2>
                 </div>
 
                 <div class="options-buttons">
@@ -142,6 +137,7 @@
             </div>
         </div>
 
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="../Content/Script/httphandler.js"></script>
         <script src="../Content/Script/Controller/lobby.controller.js"></script>

@@ -8,6 +8,9 @@ var storiesCompletedContent = document.querySelector(".stories-completed-content
 var divPlayers = document.querySelector(".div-players")
 var apresentation = document.querySelector(".apresentation");
 var votationResult = document.querySelector(".votation-result")
+var inviteTokenText = document.querySelector(".invite-token-text")
+var informationsName = document.querySelector(".informations-name")
+var iconCopy = document.querySelector(".ph-copy")
 
 const intlVar = new Intl.DateTimeFormat('pt-BR');
 const user = JSON.parse(localStorage.getItem("userId"));
@@ -54,7 +57,6 @@ socket.addEventListener('message', (event) => {
 
         case 'show_Votes':
             showVotesFront(object);
-            myPopup.show();
             break;
 
         case 'Refresh':
@@ -64,8 +66,46 @@ socket.addEventListener('message', (event) => {
         case 'finish_Votation':
             showResultsFront(object);
             break;
+
+        case 'insertUser':
+            insertUser(object);
+            break;
     }
 });
+
+
+function insertUser(userData) {
+    room.UserRoom.push(userData)
+
+    var user = userData.user
+    usersList.push(user)
+
+    userVote();
+    const element = createUsers(user);
+    divPlayers.appendChild(element)
+
+    Toast(`${user.Name} entrou no chat`)
+}
+
+function Toast(title) {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
+
+    Toast.fire({
+        icon: "success",
+        title: title
+    });
+}
+
 
 async function getRoom() {
     const result = await Handler({
@@ -73,19 +113,22 @@ async function getRoom() {
         method: "GET"
     });
 
-    const userResult = await Handler({
-        url: `room/users/${idOfRoom}`,
-        method: "GET"
-    });
-
     room = result;
     stories = result.story;
-    usersList = userResult;
+    usersList = [];
+
+    room.UserRoom.forEach((userData) => {
+        var user = userData.user
+        usersList.push(user)
+    })
 
     activeStoryId = room.storyActive
 
+    inviteTokenText.textContent = room.ServerId;
+    informationsName.textContent = user.Name
+
     const some = stories.some(s => s.id == room.storyActive)
-    if(!some){
+    if (!some) {
         room.storyActive = null
     }
 
@@ -256,6 +299,17 @@ async function reqCreateStories(storyName) {
     }
 }
 
+async function copyLinkInvite() {
+    iconCopy.classList.replace("ph-copy", "ph-checks");
+    var copyText = document.querySelector(".invite-token-text");
+
+    try { await navigator.clipboard.writeText(copyText.textContent); } catch (err) { console.error('Failed to copy: ', err) }
+
+    setTimeout(() => {
+        iconCopy.classList.replace("ph-checks", "ph-copy");
+    }, 500);
+}
+
 function showVotesFront(storyData) {
     var showVote = document.querySelector(".show-vote")
 
@@ -344,7 +398,7 @@ function chartResults(labels, backgroundColors, counter) {
             hoverOffset: 8,
             borderWidth: 0,
         }]
-    };  
+    };
 
     const ctx = document.getElementById('myChart');
 
@@ -428,6 +482,8 @@ async function activatingStoryRequest(storyId) {
 function activeStory() {
 
     const index = stories.findIndex(s => s.id == room.storyActive)
+
+    Toast(`o story "${stories[index].storyName}" está ativo!`)
 
     if (stories[index].voted) {
         showResultsFront(stories[index])

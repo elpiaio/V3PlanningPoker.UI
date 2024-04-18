@@ -371,12 +371,12 @@ sidebar */
     gap: 10px;
     align-items: center;
     text-align: center;
-    font-size: 15px;
+    font-size: 10px;
     color: azure;
 }
 
-.invite-token i {
-    font-size: 18px;
+.invite-token i{
+    font-size: 20px;
 }
 
 .invite-token i:hover {
