@@ -14,65 +14,83 @@ var iconCopy = document.querySelector(".ph-copy")
 
 const intlVar = new Intl.DateTimeFormat('pt-BR');
 const user = JSON.parse(localStorage.getItem("userId"));
-const idOfRoom = localStorage.getItem("idRoom")
+var idOfRoom = localStorage.getItem("idRoom")
 var activeStoryId;
+let socket
 
-getRoom().then(() => {
-    renderStory();
-    userVote();
-    renderUsers();
+async function decodingUuid() {
+    try {
+        const simpleRoom = await Handler({
+            url: `room/uuid/${idOfRoom}`,
+            method: "GET"
+        });
+        idOfRoom = simpleRoom.id
 
-})
+        getRoom().then(() => {
+            renderStory();
+            userVote();
+            renderUsers();
 
-const socket = new WebSocket(`ws://localhost:3005/channel/room/${idOfRoom}`);
+        })
 
-socket.addEventListener('open', (event) => {
-    console.log('Conectado ao servidor WebSocket Room');
-});
+        socket = new WebSocket(`ws://localhost:3005/channel/room/${idOfRoom}`);
 
-socket.addEventListener('message', (event) => {
-    const object = JSON.parse(event.data);
+        socket.addEventListener('open', (event) => {
+            console.log('Conectado ao servidor WebSocket Room');
+        });
 
-    switch (object.type) {
-        case 'story_deleted':
-            deleteStory(object.id);
+        socket.addEventListener('message', (event) => {
+            const object = JSON.parse(event.data);
 
-            break;
+            switch (object.type) {
+                case 'story_deleted':
+                    deleteStory(object.id);
 
-        case 'voting':
-            getRoom().then(() => {
-                storiesContent.innerHTML = '';
-                storiesCompletedContent.innerHTML = '';
-                divPlayers.innerHTML = '';
-                renderStory();
-                userVote();
-                renderUsers();
-            })
-            break;
+                    break;
 
-        case 'add_story':
-            room.story.push(object);
-            addStory(object);
-            break;
+                case 'voting':
+                    getRoom().then(() => {
+                        storiesContent.innerHTML = '';
+                        storiesCompletedContent.innerHTML = '';
+                        divPlayers.innerHTML = '';
+                        renderStory();
+                        userVote();
+                        renderUsers();
 
-        case 'show_Votes':
-            showVotesFront(object);
-            break;
+                        if(room.story){
+                            alert("o story finalizado nao possui votos para contabilizar")
+                        }
+                    })
+                    break;
 
-        case 'Refresh':
-            RefreshVotes(object);
-            break;
+                case 'add_story':
+                    room.story.push(object);
+                    addStory(object);
+                    break;
 
-        case 'finish_Votation':
-            showResultsFront(object);
-            break;
+                case 'show_Votes':
+                    showVotesFront(object);
+                    break;
 
-        case 'insertUser':
-            insertUser(object);
-            break;
+                case 'Refresh':
+                    RefreshVotes(object);
+                    break;
+
+                case 'finish_Votation':
+                    showResultsFront(object);
+                    break;
+
+                case 'insertUser':
+                    insertUser(object);
+                    break;
+            }
+        });
+
+    } catch (error) {
+        alert(error)
     }
-});
-
+}
+decodingUuid()
 
 function insertUser(userData) {
     room.UserRoom.push(userData)
@@ -92,7 +110,7 @@ function Toast(title) {
         toast: true,
         position: "top-end",
         showConfirmButton: false,
-        timer: 3000,
+        timer: 2000,
         timerProgressBar: true,
         didOpen: (toast) => {
             toast.onmouseenter = Swal.stopTimer;
@@ -101,11 +119,10 @@ function Toast(title) {
     });
 
     Toast.fire({
-        icon: "success",
+        icon: "info",
         title: title
     });
 }
-
 
 async function getRoom() {
     const result = await Handler({
@@ -438,6 +455,7 @@ function showResultsFront(storyData) {
     const labels = Object.keys(counter);
     const backgroundColors = labels.map(() => randomColor());
 
+    
     chartResults(labels, backgroundColors, counter);
 }
 

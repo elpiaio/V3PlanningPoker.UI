@@ -10,7 +10,7 @@ async function initialDataLoad() {
     });
     data = result;
     html();
-    event1();
+    eventLink();
 }
 initialDataLoad();
 
@@ -76,7 +76,6 @@ async function enterRoom(enter) {
             const body = {
                 roomName: input_create_room.value
             }
-
             const result = await Handler({
                 url: `room/${user.id}`,
                 param: body,
@@ -93,9 +92,16 @@ async function enterRoom(enter) {
     }
     if (enter == "join") {
         try {
+            const simpleRoom = await Handler({
+                url: `room/uuid/${input_join_room.value}`,
+                method: "GET"
+            });
+
+            if(!simpleRoom) return alert("sala não encontrada")
+
             const body = {
                 userId: user.id,
-                roomId: parseInt(input_join_room.value)
+                roomId: parseInt(simpleRoom.id)
             }
 
             const result = await Handler({
@@ -105,7 +111,7 @@ async function enterRoom(enter) {
             });
 
             localStorage.setItem("idRoom", input_join_room.value)
-            window.location.href = "Lobby.html";
+            window.location.href = "LobbyAdm.html";
         }
         catch (e) {
             alert(e)
@@ -113,7 +119,7 @@ async function enterRoom(enter) {
     }
 }
 
-function event1() {
+function eventLink() {
     data.forEach(item => {
         // Adiciona um event listener para cada link
         var enterRoomLinks = document.querySelectorAll(`#link-room-${item.room.id}`);
@@ -121,8 +127,7 @@ function event1() {
             link.addEventListener('click', (event) => {
                 event.preventDefault();
                 // Lógica para entrar na sala com base no id da sala
-                console.log(`Entrar na sala ${item.room.id}`);
-                localStorage.setItem("idRoom", item.room.id)
+                localStorage.setItem("idRoom", item.room.ServerId)
                 window.location.href = "LobbyAdm.html";
             });
         });
