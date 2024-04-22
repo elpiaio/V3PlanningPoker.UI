@@ -16,6 +16,10 @@ const intlVar = new Intl.DateTimeFormat('pt-BR');
 const user = JSON.parse(localStorage.getItem("userId"));
 var idOfRoom = localStorage.getItem("idRoom")
 var activeStoryId;
+
+let intervalId;
+let startTime;
+
 let socket
 
 async function decodingUuid() {
@@ -30,8 +34,8 @@ async function decodingUuid() {
             renderStory();
             userVote();
             renderUsers();
-
-        })
+            startTimer()
+        });
 
         socket = new WebSocket(`ws://localhost:3005/channel/room/${idOfRoom}`);
 
@@ -56,10 +60,7 @@ async function decodingUuid() {
                         renderStory();
                         userVote();
                         renderUsers();
-
-                        if(room.story){
-                            alert("o story finalizado nao possui votos para contabilizar")
-                        }
+                        startTimer()
                     })
                     break;
 
@@ -77,6 +78,7 @@ async function decodingUuid() {
                     break;
 
                 case 'finish_Votation':
+                    stopTimer()
                     showResultsFront(object);
                     break;
 
@@ -185,13 +187,18 @@ function createStory(storyData) {
 
     if (room.storyActive == storyData.id) story.classList.add("is-voting");
 
+    var time
+    if (storyData.finishAt) {
+        time = formatedTime(new Date(storyData.finishAt).getTime() - new Date(storyData.startedAt).getTime())
+    }
+
     const content = `
         <div class="story-name">
             <p>${storyData.storyName}</p>
         </div>
-        <p>${intlVar.format(new Date(storyData.createdAt))}</p>
+        <p class="timer-${storyData.id}">${storyData.voted ? time : intlVar.format(new Date(storyData.createdAt))}</p>
         <div class="story-icons">
-            <a onclick="activatingStoryRequest(${storyData.id})">${storyData.voted ? '<i class="ph ph-eye"></i>' : '<i class="ph ph-play"></i>'}</a>
+            <a ${storyData.voted ? `onclick="visualizationModeRequest(${storyData.id})"` : `onclick="activatingStoryRequest(${storyData.id})"`}>${storyData.voted ? '<i class="ph ph-eye"></i>' : '<i class="ph ph-play"></i>'}</a>
             <a onclick="deleteStory(${storyData.id})"><i class="ph ph-trash"></i></a>
         </div>`;
 
@@ -212,6 +219,46 @@ function renderStory() {
 
         return { ...story, element }
     });
+}
+
+
+
+
+var timer
+function startTimer() {
+    const index = room.story.findIndex(s => s.id == activeStoryId);
+    startTime = stories[index].startedAt;
+
+    if(!stories[index].voted){
+        timer = document.querySelector(`.timer-${stories[index].id}`);
+        timer.innerHTML = '';
+        intervalId = setInterval(updateTimer, 100); // Corrigido: removido os parênteses
+    }
+}
+
+function stopTimer() {
+    clearInterval(intervalId); // Limpa o intervalo para parar o contador
+}
+
+function updateTimer() {
+    const elapsedTime = Date.now() - new Date(startTime).getTime();
+    timer.textContent = formatedTime(elapsedTime)
+}
+
+function formatedTime(elapsedTime) {
+    let hours = Math.floor(elapsedTime / (3600 * 1000));
+    let minutes = Math.floor((elapsedTime % (3600 * 1000)) / (60 * 1000));
+    let seconds = Math.floor((elapsedTime % (60 * 1000)) / 1000);
+
+    hours = formatTime(hours);
+    minutes = formatTime(minutes);
+    seconds = formatTime(seconds);
+
+    return `${hours}:${minutes}:${seconds}`;
+}
+
+function formatTime(time, digits = 2) {
+    return time.toString().padStart(digits, '0');
 }
 
 
@@ -455,7 +502,7 @@ function showResultsFront(storyData) {
     const labels = Object.keys(counter);
     const backgroundColors = labels.map(() => randomColor());
 
-    
+
     chartResults(labels, backgroundColors, counter);
 }
 
@@ -488,6 +535,25 @@ async function activatingStoryRequest(storyId) {
 
         const result = await Handler({
             url: `activeStory/${idOfRoom}`,
+            param: storyIdObject,
+            method: "PUT"
+        });
+
+    } catch (e) {
+        alert(e)
+    }
+}
+
+async function visualizationModeRequest(storyId){
+    try {
+        const storyIdObject = {
+            storyActive: storyId,
+        }
+
+        console.log(storyId)
+
+        const result = await Handler({
+            url: `story/visualizationMode/${idOfRoom}`,
             param: storyIdObject,
             method: "PUT"
         });
