@@ -645,7 +645,7 @@ var buttonStc = document.querySelector(".button-stc")
 st.style.display = "flex"
 stc.style.display = "none"
 
-buttonSt.style.backgroundColor = "rgba(58, 69, 40, 0.5)";
+buttonSt.style.backgroundColor = "rgb(41 42 38 / 50%)";
 buttonStc.style.backgroundColor = "rgb(56, 56, 56)";
 
 function openTab(idTab) {
@@ -653,13 +653,13 @@ function openTab(idTab) {
         st.style.display = "flex"
         stc.style.display = "none"
 
-        buttonSt.style.backgroundColor = "rgba(58, 69, 40, 0.5)";
+        buttonSt.style.backgroundColor = "rgb(41 42 38 / 50%)";
         buttonStc.style.backgroundColor = "rgb(56, 56, 56)";
 
     }
     if (idTab == "stories-completed-content") {
         stc.style.display = "flex";
-        buttonStc.style.backgroundColor = "rgba(58, 69, 40, 0.5)";
+        buttonStc.style.backgroundColor = "rgb(41 42 38 / 50%)";
 
         st.style.display = "none";
         buttonSt.style.backgroundColor = "rgb(56, 56, 56)";
