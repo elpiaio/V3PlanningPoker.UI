@@ -23,7 +23,12 @@ let startTime;
 
 let socket
 
+if (!user || !idOfRoom) {
+    window.location.href = "sub-pages/error.html"
+}
+
 async function decodingUuid() {
+
     try {
         const simpleRoom = await Handler({
             url: `room/uuid/${idOfRoom}`,
@@ -225,9 +230,6 @@ function renderStory() {
         return { ...story, element }
     });
 }
-
-
-
 
 var timer
 function startTimer() {

@@ -4,6 +4,11 @@ const intlVar = new Intl.DateTimeFormat('pt-BR');
 let data = [];
 
 async function initialDataLoad() {
+    if (!user) {
+        alert("sua sessão expirou, faça o login novamente!")
+        window.location.href = "LANDINGPAGE.html"
+    }
+
     const result = await Handler({
         url: `user/rooms/${user.id}`,
         method: "GET"
@@ -82,7 +87,7 @@ async function enterRoom(enter) {
                 method: "POST"
             });
 
-            localStorage.setItem("idRoom", result.id)
+            localStorage.setItem("idRoom", result.ServerId)
             window.location.href = "LobbyAdm.html";
         }
         catch (e) {

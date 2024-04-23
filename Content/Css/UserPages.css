@@ -55,6 +55,7 @@ body {
     gap: 8px;
     align-items: center;
     color: aliceblue;
+    margin-right: 10px;
 }
 
 .top-bar-links i{
