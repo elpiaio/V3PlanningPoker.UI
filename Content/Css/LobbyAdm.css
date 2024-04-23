@@ -11,18 +11,19 @@ body {
     /* background-image: url("../../Public/image2.jpg"); */
     background-color: rgb(27, 26, 26);
     height: 100vh;
+    min-height: 100vh;
     width: 100%;
-    backdrop-filter:  brightness(30%);
+    backdrop-filter: brightness(30%);
     background-size: cover;
     background-image: url("../../Public/image2.jpg");
-    
+
 }
 
-#add-story-dialog{
+#add-story-dialog {
     border-radius: 15px;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     width: 100%;
     max-width: 500px;
     /* background-color: #aeaeae; */
@@ -30,7 +31,7 @@ body {
     color: white !important;
 }
 
-.add-story-form{
+.add-story-form {
     gap: 10px;
     width: 100%;
     height: 100%;
@@ -40,7 +41,7 @@ body {
     color: #000000;
 }
 
-.add-story-form input{
+.add-story-form input {
     border: none;
     /* box-shadow: 1px 3px 9px 0px #7c7c7c;; */
     padding: 8px 18px;
@@ -58,7 +59,7 @@ body {
     outline: none;
 }
 
-.add-story-form button{
+.add-story-form button {
     padding: 12px 35px;
     cursor: pointer;
     border-radius: 12px;
@@ -83,7 +84,6 @@ body {
     display: flex;
     width: 100%;
     height: 100vh;
-    height: inherit;
     justify-content: center;
 }
 
@@ -98,14 +98,17 @@ body {
 
 .lobby-stories-buttons {
     width: 70%;
-    height: 70%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.lobby-center{
+.lobby-center {
     height: 100%;
 }
 
-.votation-result{
+.votation-result {
     background-color: rgb(41 42 38 / 50%);
     width: 100%;
     height: 100%;
@@ -115,13 +118,13 @@ body {
     align-items: center;
 }
 
-.votation-result canvas{
+.votation-result canvas {
     max-width: 70%;
     max-height: 70%;
 }
 
 
-.apresentation{
+.apresentation {
     display: flex;
     background-color: rgb(41 42 38 / 50%);
     width: 100%;
@@ -183,7 +186,6 @@ body {
 
 .stories-root {
     display: flex;
-    margin-top: 20px;
     height: 100%;
     width: 100%;
     background-color: rgb(41 42 38 / 50%);
@@ -222,7 +224,8 @@ body {
 
 /****/
 
-.stories-content, .stories-completed-content {
+.stories-content,
+.stories-completed-content {
     margin-top: 10px;
     display: flex;
     flex-direction: column;
@@ -244,14 +247,20 @@ body {
     padding: 20px;
 }
 
-.story p{
+.story p {
     display: flex;
     flex: 1;
 }
 
-.story-name{
+.story-name {
     max-width: 45%;
     width: 45%;
+}
+
+.story-name p {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .story:hover {
@@ -267,7 +276,7 @@ body {
     cursor: pointer;
 }
 
-.is-voting{
+.is-voting {
     background-color: #555 !important;
 }
 
@@ -334,7 +343,7 @@ sidebar */
     width: 80%;
     font-size: 12px;
     text-align: center;
-    gap: 16px;
+    gap: 14px;
     justify-content: flex-start;
 }
 
@@ -345,7 +354,9 @@ sidebar */
 }
 
 .player h2 {
-    line-height: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 .player-voto {
@@ -375,7 +386,7 @@ sidebar */
     color: azure;
 }
 
-.invite-token i{
+.invite-token i {
     font-size: 20px;
 }
 
@@ -423,10 +434,14 @@ sidebar */
     cursor: pointer;
 }
 
+.options-buttons {
+    display: flex;
+    gap: 4px;
+}
+
 .options-buttons button {
     padding: 21px;
     border-radius: 12px;
-    gap: 10px;
     font-size: 20px;
     border: none;
     background-color: rgba(0, 0, 0, 0.5);

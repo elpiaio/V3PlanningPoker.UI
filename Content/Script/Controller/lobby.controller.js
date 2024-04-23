@@ -16,6 +16,7 @@ const intlVar = new Intl.DateTimeFormat('pt-BR');
 const user = JSON.parse(localStorage.getItem("userId"));
 var idOfRoom = localStorage.getItem("idRoom")
 var activeStoryId;
+var admin = false
 
 let intervalId;
 let startTime;
@@ -146,6 +147,10 @@ async function getRoom() {
     inviteTokenText.textContent = room.ServerId;
     informationsName.textContent = user.Name
 
+    if (window.location.pathname == "/Pages/LobbyAdm.html") {
+        admin = true
+    }
+
     const some = stories.some(s => s.id == room.storyActive)
     if (!some) {
         room.storyActive = null
@@ -229,7 +234,7 @@ function startTimer() {
     const index = room.story.findIndex(s => s.id == activeStoryId);
     startTime = stories[index].startedAt;
 
-    if(!stories[index].voted){
+    if (!stories[index].voted) {
         timer = document.querySelector(`.timer-${stories[index].id}`);
         timer.innerHTML = '';
         intervalId = setInterval(updateTimer, 100); // Corrigido: removido os parênteses
@@ -272,7 +277,7 @@ function createUsers(userData) {
     }
 
     const content = ` 
-        <i class="ph ph-user-circle-gear"></i>
+        <i class="ph ph-user-circle"></i>   
         <h2>${userData.Name}</h2>
         <div class="player-voto" id="player-voto-${userData.id}">
             ${userData.vote ? `<p>${userData.showVote ? userData.vote : '<i class="ph ph-check-circle"></i>'}</p>` : `<p></p>`}     
@@ -502,6 +507,13 @@ function showResultsFront(storyData) {
     const labels = Object.keys(counter);
     const backgroundColors = labels.map(() => randomColor());
 
+    if (labels.length == 0) {
+        Swal.fire({
+            title: "Sem voto",
+            text: "O story não possui voto!",
+            icon: "info"
+        });
+    }
 
     chartResults(labels, backgroundColors, counter);
 }
@@ -544,7 +556,7 @@ async function activatingStoryRequest(storyId) {
     }
 }
 
-async function visualizationModeRequest(storyId){
+async function visualizationModeRequest(storyId) {
     try {
         const storyIdObject = {
             storyActive: storyId,
