@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../Content/Css/CreateAccount.css">
+    <link rel="stylesheet" href="../Content/Css/loading.css">
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <title>Create Account</title>
     <link rel="icon" type="image/x-icon" href="../Public/favicon.jpg">
@@ -23,7 +24,8 @@
             </div>
             <div class="white-banner">
                 <H1>Cadastro</H1>
-                <input type="text" class="input-name" placeholder="Nome">
+                <input type="text" class="input-name" placeholder="Nome (max. de 16 caracteres)">
+                <input type="text" class="input-email" placeholder="Email">
                 <input type="password" class="input-password" placeholder="Senha">
                 <input type="password" class="input-password-confirm" placeholder="Confirmar Senha">
                 <button class="button-create-account"><i class="ph ph-paper-plane-tilt"></i></button>
@@ -31,6 +33,8 @@
             </div>
         </div>
     </div>
+    <script src="../Content/Script/Controller/loading.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../Content/Script/httphandler.js"></script>
     <script src="../Content/Script/Controller/CreateAccount.controller.js"></script>
 </body>
