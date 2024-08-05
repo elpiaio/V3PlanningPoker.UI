@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+/* HEADER */
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+.top-header {
+    background-color: black;
+    display: flex;
+    justify-content: center;
+}
+
+.top-bar {
+    position: relative;
+    display: flex;
+    height: 80px;
+    width: 100%;
+    max-width: 1440px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+
+.top-bar img {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    border: none;
+    margin: 0;
+    max-width: 173px;
+    max-height: 27px;
+}
+
+.top-bar a {
+    color: aliceblue;
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+    text-decoration: none;
+    padding: 8px 20px 8px 20px;
+    border-radius: 20px;
+    transition: .3s all
+}
+.top-bar a:hover{
+    background-color: #32382B;
+}
+
+
+.top-bar-links {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.top-bar-links button {
+    background-color: #32382B;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 20px 8px 20px;
+    color: azure;
+    font-family: "Inter", sans-serif;
+    font-size: 16px;
+
+}
+
+.top-bar-links button:hover {
+    cursor: pointer;
+}
+
+.link-sign-in {
+    color: #758276 !important;
+}
+
+
+/**/
+
+
+
+/* BANNER */
+.body-banner {
+    background-color: #32382B;
+    width: 100%;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+}
+
+.banner{
+    display: flex;
+    max-width: 1440px;
+    width: 100%;
+    height: 400px;
+    align-items: center;
+    justify-content:center;
+    gap: 100px;
+    position: relative;
+}
+
+.banner::after {
+    content: "Get Started";
+    position: absolute;
+    top: 100%;
+    transform: translateY(-50%);
+    background-color: black;
+    font-size: 26px;
+    padding: 10px 60px;
+    color: white;
+    border-radius: 18px ;
+    font-weight: 600;
+}
+
+.img-poker img{
+    width: 459px;
+    height: 209px;
+    border-radius: 15px;
+}
+
+.logo{
+    align-items: center;
+    display: flex;
+    gap: 20px;
+    font-family: "Inter", sans-serif;
+    color: aliceblue;
+}
+
+.logo{
+    margin: 0;
+}
+
+.division{
+    background-color: aliceblue;
+    height: 70px;
+    width: 5px;
+}
+
+/**/
+
+.footer{
+    display: flex;
+    align-items: center;
+    height: 400px;
+    width: 100%;
+    font-size: 40px;
+    justify-content: center;
+    font-weight: bolder;
+}
+
+.footer h1:hover{
+    font-size: 84px;
+    transition: .3s all
+}

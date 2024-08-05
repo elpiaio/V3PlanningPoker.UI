@@ -1,0 +1,123 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+.root {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(to right, #32382B 50%, #d9d9d9 50%);
+    justify-content: center;
+}
+
+.banner-dimension {
+    display: flex;
+    width: 100%;
+    max-width: 1440px;
+    height: 100vh;
+    justify-content: center;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 17px 0px;
+}
+
+.green-banner {
+    display: flex;
+    background-color: #32382B;
+    width: 50%;
+    align-items: center;
+    color: aliceblue;
+    font-family: "Inter", sans-serif;
+    font-weight: 900;
+    gap: 30px;
+    justify-content: center;
+}
+
+.division {
+    background-color: aliceblue;
+    height: 70px;
+    width: 5px;
+}
+
+.white-banner {
+    display: flex;
+    flex-direction: column;
+    background-color: #d9d9d9;
+    width: 50%;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+}
+
+.white-banner input {
+    width: 50%;
+    padding: 10px;
+    border-radius: 30px;
+    border: 1px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 17px 0px;
+}
+
+.password-content {
+    width: 50%;
+    position: relative;
+}
+
+.password-content input {
+    width: 100%;
+}
+
+.eye-button {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 110%;
+    max-height: 36px;
+    padding: 10px;
+    border-radius: 30px;
+    border: 1px;
+    color: #32382B;
+    font-size: 14px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 17px 0px;
+}
+
+.eye-button:hover {
+    cursor: pointer;
+    background-color: #838384;
+}
+
+.button-send {
+    width: 20%;
+    padding: 5px;
+    border-radius: 30px;
+    border: 1px;
+    color: #32382B !important;
+    font-size: 25px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 17px 0px;
+}
+
+.button-send:hover {
+    cursor: pointer;
+    background-color: #838384;
+}
+
+.white-banner h1 {
+    font-size: 40px;
+    color: #32382B;
+    font-weight: 400;
+}
+
+.white-banner a {
+    color: #32382B;
+}
+
+.forgot-password-content a {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.forgot-password-content a:hover {
+    color: #ffffff;
+}

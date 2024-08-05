@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Content/Css/Lobby.css">
+    <link rel="stylesheet" href="../Content/Css/loading.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <title>lobby Adm</title>
+    <link rel="icon" type="image/x-icon" href="../Public/favicon.jpg">
+</head>
+
+<body>
+    
+    <!-- header -->
+    <header class="top-header">
+        <div class="top-bar">
+            <img src="../Public/cutted_logo.png" class="cutted-logo-home" alt="logo TunAd">
+
+            <div class="top-bar-room">
+                <h1 class="room-name">room name</h1>
+                <div class="division"></div>
+                <i onclick="copyLinkInvite()" title="token de convite" class="ph ph-copy"></i>
+            </div>
+
+            <div class="top-bar-user">
+                <h1 class="user-name">user name</h1>
+                <div class="logoff-icon">
+                    <i class="ph ph-user icon-logoff" id="logoff-icon" title="Sair"></i>
+                </div>
+            </div>
+        </Div>
+    </header>
+
+    <div class="root-lobby" id="root-lobby">
+        <dialog id="add-story-dialog">
+            <form method="dialog" class="add-story-form">
+                <h2>Add Story</h2>
+                <input class="input-story" type="text" placeholder="Story Name">
+                <div method="dialog" class="actions-modal">
+                    <button value="cancel">Close</button>
+                    <button value="send" class="button-send">Create</button>
+                </div>
+            </form>
+        </dialog>
+
+        <!--planning poker lobby-->
+        <div class="lobby">
+            <!--botoes(cards)-->
+            <div class="lobby-stories-buttons">
+                <div class="lobby-center">
+                    <div class="lobby-buttons">
+                        <button type="button" value="0.5" class="card pattern-color" id="cardmeio"
+                            onclick="clickVote(`0.5`)" class="btn-lobby">
+                            <div class="button-detail">
+                                <strong>0.5</strong>
+                            </div>
+                        </button>
+                        <button type="button" value="1" class="card pattern-color" id="card1" onclick="clickVote(`1`)"
+                            class="btn-lobby">
+                            <div class="button-detail">
+                                <strong>1</strong>
+                            </div>
+                        </button>
+                        <button type="button" value="2" class="card pattern-color" id="card2" onclick="clickVote(`2`)"
+                            class="btn-lobby">
+                            <div class="button-detail">
+                                <strong>2</strong>
+                            </div>
+                        </button>
+                        <button type="button" value="3" class="card pattern-color" id="card3" onclick="clickVote(`3`)"
+                            class="btn-lobby">
+                            <div class="button-detail">
+                                <strong>3</strong>
+                            </div>
+                        </button>
+                        <button type="button" value="5" class="card pattern-color" id="card5" onclick="clickVote(`5`)"
+                            class="btn-lobby">
+                            <div class="button-detail">
+                                <strong>5</strong>
+                            </div>
+                        </button>
+                        <button type="button" value="8" class="card pattern-color" id="card8" onclick="clickVote(`8`)"
+                            class="btn-lobby">
+                            <div class="button-detail">
+                                <strong>8</strong>
+                            </div>
+                        </button>
+                        <button type="button" value="coffee" class="card pattern-color" id="cardCoffee"
+                            onclick="clickVote(`coffee`)" class="btn-lobby">
+                            <div class="button-detail">
+                                <strong><i class="ph ph-coffee"></i></strong>
+                            </div>
+                        </button>
+                        <button type="button" value="13" class="card pattern-color" id="card13"
+                            onclick="clickVote(`13`)" class="btn-lobby">
+                            <div class="button-detail">
+                                <strong>13</strong>
+                            </div>
+                        </button>
+                        <button type="button" value="?" class="card pattern-color" id="card?" onclick="clickVote('?')"
+                            class="btn-lobby">
+                            <div class="button-detail">
+                                <strong>?</i></strong>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="apresentation pattern-color">
+                        <H1 class="apresentation-text">Crie ou ative algum story</H1>
+                    </div>
+
+                    <div class="votation-result pattern-color">
+                        <canvas id="myChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="stories-root pattern-color">
+                    <div class="stories">
+                        <div class="tab">
+                            <button onclick="openTab('stories-content')" class="button-st tab-button pattern-color">
+                                <p>Active Stories</p>
+                                <div class="tab-detail"></div>
+                            </button>
+                            <button onclick="openTab('stories-completed-content')"
+                                class="button-stc tab-button pattern-color">
+                                <p>Finished Stories</p>
+                                <div class="tab-detail"></div>
+                            </button>
+                        </div>
+
+                        <div class="stories-content">
+
+                        </div>
+
+                        <div class="stories-completed-content" style="display: none;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- sidebar -->
+            <div class="lobby-sidebar pattern-color">
+                <img src="../Public/header_logo.png" alt="">
+
+                <div class="div-players-root" id="div-players-root">
+                    <div class="div-players">
+
+                    </div>
+                </div>
+
+                <div class="spy-root"> </div>
+
+                <div class="options-buttons"></div>
+            </div>
+        </div>
+
+        <div class="root-spy-votes">
+            <div class="spy-votes">
+                <div class="div-spy-players">
+                    <h1 class="title-spy-player">Spy votes</h1>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script src="../Content/Script/Api/Lobby.api.js"></script>
+        <script src="../Content/Script/Controller/loading.js"></script>
+        <script src="../Content/Script/httphandler.js"></script>
+
+        <script src="../use-cases/lobby-cases/admin-features/add-stories.js"></script>
+        <script src="../use-cases/lobby-cases/admin-features/clean-votes.js"></script>
+        <script src="../use-cases/lobby-cases/admin-features/remove-stories.js"></script>
+        <script src="../use-cases/lobby-cases/admin-features/remove-user.js"></script>
+        <script src="../use-cases/lobby-cases/admin-features/show-votes.js"></script>
+        <script src="../use-cases/lobby-cases/admin-features/new-admin.js"></script>
+        <script src="../use-cases/lobby-cases/admin-features/three-steps.js"></script>
+        <script src="../use-cases/lobby-cases/admin-features/realTimeVote.js"></script>
+
+        <script src="../use-cases/lobby-cases/constructors/story-renderer.js"></script>
+        <script src="../use-cases/lobby-cases/constructors/user-renderer.js"></script>
+        <script src="../use-cases/lobby-cases/constructors/userVoteList.js"></script>
+
+        <script src="../use-cases/lobby-cases/userValidator.js"></script>
+        <script src="../use-cases/lobby-cases/copyLink.js"></script>
+        <script src="../use-cases/lobby-cases/leaveRoom.js"></script>
+        <script src="../use-cases/lobby-cases/openTab.js"></script>
+        <script src="../use-cases/lobby-cases/timer.js"></script>
+        <script src="../use-cases/lobby-cases/urlValidation.js"></script>
+        <script src="../use-cases/lobby-cases/use-chart.js"></script>
+        <script src="../use-cases/lobby-cases/use-sweetalert.js"></script>
+        <script src="../use-cases/lobby-cases/use-votes.js"></script>
+
+        <script src="../Content/Script/Controller/lobby.controller.js"></script>
+
+        
+</body>
+
+</html>

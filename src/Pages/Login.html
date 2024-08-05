@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../Content/Css/Login.css">
+    <link rel="stylesheet" href="../Content/Css/loading.css">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <title>Login</title>
+    <link rel="icon" type="image/x-icon" href="../Public/favicon.jpg">
+</head>
+
+<body>
+    <div class="root" id="root">
+        <div class="banner-dimension">
+            <div class="green-banner">
+                <div class="img-logo">
+                    <img src="../Public/header_logo.png" alt="logo TunAd">
+                </div>
+
+                <div class="division"></div>
+                <h1>Planning <br> Poker</h1>
+            </div>
+            <div class="white-banner">
+                <H1>Login</H1>
+                <input class="input-email" type="text" placeholder="Email">
+                <div class="password-content">
+                    <input class="input-senha" type="password" placeholder="Senha">
+                    <button class="eye-button" onclick="showPassword()"><i class="ph-bold ph-eye-closed"></i></button>
+                </div>
+                <div class="forgot-password-content">
+                    <a href="javascript:void(0)" onclick="passwordRecovery()">Esqueceu sua senha?</a>
+                </div>
+                <button class="button-send"><i class="ph ph-paper-plane-tilt"></i></button>
+                <a id="link"></a>
+                <div id="buttonDiv"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../Content/Script/Api/Google.api.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async></script>
+    <script src="../use-cases/google-cases/button-constructor.js"></script>
+    <script src="https://unpkg.com/jwt-decode@3.1.2/build/jwt-decode"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../Content/Script/httphandler.js"></script>
+    <script src="../Content/Script/Api/Login.api.js"></script>
+    <script src="../Content/Script/Controller/loading.js"></script>
+    <script src="../use-cases/login-cases/use-sweetalert.js"></script>
+    <script src="../use-cases/login-cases/passwordRecovery.js"></script>
+    <script src="../use-cases/login-cases/forgotPassword.js"></script>
+    <script src="../use-cases/lobby-cases/urlValidation.js"></script>
+    <script src="../use-cases/login-cases/showPassword.js"></script>
+    <script src="../Content/Script/Controller/login.controller.js"></script>
+    <script src="../use-cases/register-cases/validatingPassword.js"></script>
+</body>
+
+</html>
